@@ -4,8 +4,8 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from pandas_profiling import ProfileReport
-import matplotlib.pyplot as plt
 from pandas.plotting import scatter_matrix
+import plotly.graph_objects as go
 
 
 st.set_page_config(
@@ -26,8 +26,25 @@ def get_data():
 df = get_data()
 
 
-if st.selectbox('Select a country.', np.sort(df['COUNTRY'].unique())):
-    st.write("Here's our first attempt at using data to create a table:")
-    st.write(df)
+selected_country = st.selectbox('Select a country.', np.sort(df['COUNTRY'].unique()))
+st.write("Here's our first attempt at using data to create a table:")
+st.write(df)
 
-st.write(df.describe())
+df_selected_country = df[df["COUNTRY"] == selected_country]
+df_selected_country["ORDERDATE"] = pd.to_datetime(df_selected_country["ORDERDATE"])
+#-----------------------------------------------------------------------------------------------------------------
+st.write('Your selected country is ' + selected_country)
+st.table(df_selected_country.describe())
+
+
+
+
+#-----------------------------------------------------------------------------------------------------------------
+df2 = df_selected_country.groupby(["ORDERDATE"]).sum()
+fig = go.Figure()
+fig.add_trace(go.Scatter(x=df2.index, y=df2["SALES"],
+                    mode='lines',
+                    name='lines'))
+fig.update_layout(title="Umsatz-Entwicklung", autosize=False,
+width=800, height=800)
+st.plotly_chart(fig, use_container_width=True)
