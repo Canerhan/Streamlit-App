@@ -43,8 +43,8 @@ st.table(df_selected_country.describe())
 df2 = df_selected_country.groupby(["ORDERDATE"]).sum()
 fig = go.Figure()
 fig.add_trace(go.Scatter(x=df2.index, y=df2["SALES"],
-                    mode='lines',
-                    name='lines'))
+                    mode='lines+markers',
+                    name='Umsatz'))
 fig.update_layout(title="Umsatz-Entwicklung", autosize=False,
 width=800, height=800)
 st.plotly_chart(fig, use_container_width=True)
